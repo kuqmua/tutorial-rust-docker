@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "tutorial-rust-docker"
+name = "myapp"
 version = "0.1.0"
