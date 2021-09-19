@@ -1,6 +1,9 @@
 [package]
 name = "myapp"
+edition = "2018"
 version = "0.1.0"
 authors = ["Mike Sparr <msparr@gmail.com>"]
 
 [dependencies]
+tokio = { version = "0.2", features = ["macros", "rt-threaded"] }
+warp = "0.2"
