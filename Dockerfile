@@ -44,4 +44,6 @@ RUN chown myapp:myapp myapp
 
 USER myapp
 
+EXPOSE 8000
+
 CMD ["./myapp"]

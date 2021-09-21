@@ -1,12 +1,11 @@
 version: '3.8'
 services:
   myapp:
-    container_name: adoring_solomon
+    container_name: myapp-container-name
     image: myapp
     restart: always
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-    #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    environment:
+      RUST_DOCKER_NAME: ${RUST_DOCKER_NAME}
     ports:
       - 8000:8000
     # volumes:
