@@ -1,49 +1,20 @@
-# ------------------------------------------------------------------------------
-# Cargo Build Stage
-# ------------------------------------------------------------------------------
-
 FROM rust:latest as cargo-build
 
-RUN apt-get update
-
-RUN apt-get install musl-tools -y
-
+RUN rustup default nightly
 RUN rustup target add x86_64-unknown-linux-musl
-
-WORKDIR /usr/src/myapp
-
-COPY Cargo.toml Cargo.toml
-
-RUN mkdir src/
-
-RUN echo "fn main() {println!(\"if you see this, the build broke\")}" > src/main.rs
-
-RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-linux-musl
-
-RUN rm -f target/x86_64-unknown-linux-musl/release/deps/myapp*
-
+RUN rustup install nightly
+WORKDIR /usr/src/tokio-docker
 COPY . .
-
-RUN RUSTFLAGS=-Clinker=musl-gcc cargo build --release --target=x86_64-unknown-linux-musl
-
-# ------------------------------------------------------------------------------
-# Final Stage
-# ------------------------------------------------------------------------------
+RUN cargo +nightly build --target=x86_64-unknown-linux-musl --release
 
 FROM alpine:latest
 
-RUN addgroup -g 1000 myapp
-
-RUN adduser -D -s /bin/sh -u 1000 -G myapp myapp
-
-WORKDIR /home/myapp/bin/
-
-COPY --from=cargo-build /usr/src/myapp/target/x86_64-unknown-linux-musl/release/myapp .
-
-RUN chown myapp:myapp myapp
-
-USER myapp
-
-EXPOSE 8000
-
-CMD ["./myapp"]
+RUN addgroup -g 1000 tokio-docker
+RUN adduser -D -s /bin/sh -u 1000 -G tokio-docker tokio-docker
+WORKDIR /home/rust_rest/bin/
+COPY --from=cargo-build /usr/src/tokio-docker/target/x86_64-unknown-linux-musl/release/tokio-docker .
+RUN ls
+RUN chown tokio-docker:tokio-docker tokio-docker
+USER tokio-docker
+EXPOSE 8080
+CMD [ "./tokio-docker" ]
